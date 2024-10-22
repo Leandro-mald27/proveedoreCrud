@@ -1,0 +1,401 @@
+{
+	"info": {
+		"_postman_id": "ae0b052e-3fc1-4188-94a3-a8b887d1c5df",
+		"name": "Integration testing basics",
+		"description": "# ⛓️ Get started here\n\nPostman allows you to test your APIs using simple Javascript code. You can evaluate your response body, headers, cookies, and more using the [ChaiJS BDD](https://www.chaijs.com/api/bdd/) syntax.\n\nThis template guides you through the process of setting up an integration test to ensure that all individual components of an API function together seamlessly.\n\nThe API under test in this collection includes three endpoints for registering and receiving a token, accessing your unique generated name, and unregistering a token:\n\n- POST `/register`\n- POST `/unregister`\n- GET `/my-name`\n    \n\nBy setting up requests in the order of the operation, we can test the flow of data to and from the endpoints and ensure they work together as expected. We also verify that the data persists between requests on the back end.\n\n## 🔖 **How to use this template**\n\n**Step 1:** Check out the requests' documentation to learn more about -\n\n- what each request is meant to do.\n- the tests we've added against each one.\n    \n\n**Step 2:** Run this collection by clicking on \"Run\".\n\n<img src=\"https://content.pstmn.io/84019b0f-69c8-4c5f-98b9-2c90a6f9a0b1/Y29sbGVjdGlvbi1ydW5uZXItYnV0dG9uLmpwZWc=\" alt=\"\" height=\"103\" width=\"266\">\n\n**Step 3:** To customize this template, replace the request URLs with your API endpoints and add or edit the tests if needed.\n\n## ℹ️ Resources\n\n[Scripting in Postman](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)\n\n[Test script examples](https://learning.postman.com/docs/writing-scripts/script-references/test-examples/)\n\n[Postman Sandbox API reference](https://learning.postman.com/docs/sending-requests/grpc/postman-sandbox-api/#writing-assertions)\n\n[Using the Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13546686"
+	},
+	"item": [
+		{
+			"name": "Add Proveedores",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response contains the created provider\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.nit).to.equal(\"123456789\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has success message\", () => {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.equal(\"Proveedor creado con éxito\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJleHAiOjE3Mjk1Nzc1NDYsImlzcyI6IlByb3ZlZWRvcmVzQVBJUHJvZCIsImF1ZCI6IlByb3ZlZWRvcmVzQVBJVXNlcnNQcm9kIn0.S2LU3vTEOVbiwuaEtac29cv3QkskyLyTB72DfT1BG60",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nit\": \"123456789\",\r\n    \"razonSocial\": \"Prueba S.A.\",\r\n    \"direccion\": \"Calle 123\",\r\n    \"ciudad\": \"Bogotá\",\r\n    \"departamento\": \"Cundinamarca\",\r\n    \"correo\": \"prueba@ejemplo.com\",\r\n    \"activo\": true,\r\n    \"fechaCreacion\": \"2024-10-19T17:12:43.829Z\",\r\n    \"nombreContacto\": \"Juan Pérez\",\r\n    \"correoContacto\": \"contacto@ejemplo.com\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Proveedores",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Proveedores"
+					]
+				},
+				"description": "This returns a `token` that you can use to retrieve information later on.\n\nWe have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection."
+			},
+			"response": []
+		},
+		{
+			"name": "Get proveedores",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"A name is returned\", () => {",
+							"    pm.expect(pm.response.json()).to.have.property('name');",
+							"    pm.expect(pm.response.json().name).to.be.a('string');",
+							"})"
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/my-name?token={{token}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"my-name"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "This request uses the saved `token` collection variable to access a secret 'name' stored against that token.\n\nIn this request, we used the `token` collection variable as a query param to fetch the name generated for that token. We have added a test to check that a name is correctly returned."
+			},
+			"response": []
+		},
+		{
+			"name": "Put Proveedores",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verifica si la respuesta es exitosa\r",
+							"pm.test(\"El proveedor se ha actualizado correctamente\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.success).to.be.true;\r",
+							"    pm.expect(jsonData.message).to.equal(\"Proveedor actualizado con éxito\"); // Fixed the test to handle null data\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJleHAiOjE3Mjk1Nzc1NDYsImlzcyI6IlByb3ZlZWRvcmVzQVBJUHJvZCIsImF1ZCI6IlByb3ZlZWRvcmVzQVBJVXNlcnNQcm9kIn0.S2LU3vTEOVbiwuaEtac29cv3QkskyLyTB72DfT1BG60",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nit\": \"123456789\",\r\n    \"razonSocial\": \"Prueba S.A. Actualizada\",\r\n    \"direccion\": \"Calle 456\",\r\n    \"ciudad\": \"Medellín\",\r\n    \"departamento\": \"Antioquia\",\r\n    \"correo\": \"prueba.actualizada@ejemplo.com\",\r\n    \"activo\": false,\r\n    \"fechaCreacion\": \"2024-10-19T17:12:43.829Z\",\r\n    \"nombreContacto\": \"Luis Gómez\",\r\n    \"correoContacto\": \"contacto.actualizado@ejemplo.com\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Proveedores/123456789",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Proveedores",
+						"123456789"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Proveedor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verifica si el proveedor fue eliminado exitosamente\r",
+							"pm.test(\"Proveedor eliminado con éxito\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.success).to.be.true;\r",
+							"    pm.expect(jsonData.message).to.equal(\"Proveedor eliminado con éxito\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJleHAiOjE3Mjk1Nzc1NDYsImlzcyI6IlByb3ZlZWRvcmVzQVBJUHJvZCIsImF1ZCI6IlByb3ZlZWRvcmVzQVBJVXNlcnNQcm9kIn0.S2LU3vTEOVbiwuaEtac29cv3QkskyLyTB72DfT1BG60",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Proveedores/123456789",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Proveedores",
+						"123456789"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Proveedor Nit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verifica si la respuesta es exitosa\r",
+							"pm.test(\"Proveedor obtenido correctamente\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.success).to.be.true;\r",
+							"    pm.expect(jsonData.data.nit).to.equal(\"556677889\");\r",
+							"    pm.expect(jsonData.data.razonSocial).to.equal(\"Importadora La Rápida\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJleHAiOjE3Mjk1Nzc1NDYsImlzcyI6IlByb3ZlZWRvcmVzQVBJUHJvZCIsImF1ZCI6IlByb3ZlZWRvcmVzQVBJVXNlcnNQcm9kIn0.S2LU3vTEOVbiwuaEtac29cv3QkskyLyTB72DfT1BG60",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/Proveedores/556677889",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Proveedores",
+						"556677889"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validate Auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verifica si el login falla con credenciales incorrectas\r",
+							"pm.test(\"Login fallido\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.success).to.be.false;\r",
+							"    pm.expect(jsonData.message).to.equal(\"Usuario o contraseña incorrectos\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"wrongpassword\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validate Credential Auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verifica si el token se genera correctamente\r",
+							"pm.test(\"Login exitoso\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.success).to.be.true;\r",
+							"    pm.expect(jsonData.message).to.equal(\"Login exitoso\");\r",
+							"    pm.expect(jsonData.data).to.be.a('string');\r",
+							"    pm.expect(jsonData.data.length).to.be.greaterThan(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"password\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/Auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"Auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://postman-integration-testing.glitch.me/"
+		}
+	]
+}

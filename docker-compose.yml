@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  proveedorescrud:
+    build:
+      context: .
+      dockerfile: proveedoresCrud/Dockerfile
+    image: proveedorescrud_docker
+    container_name: proveedorescrud_app
+    ports:
+      - "8080:80"
+
+  test:
+    build:
+      context: ./proveedoresTestIntegrations
+      dockerfile: Dockerfile
+    image: proveedorescrud_docker_integrations_test
+    entrypoint: newman
+    command: run "Integration testing basics.postman_collection.json" --environment="Integrations-environment.postman_environment.json" --reporters cli,json --reporter-json-export /data/results/outputfile.json
+    volumes:
+      - results:/data/results
+    depends_on:
+      - proveedorescrud
+
+volumes:
+  results:

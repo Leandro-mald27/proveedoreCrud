@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>proveedoresCrud</name>
+    </assembly>
+    <members>
+        <member name="M:ProveedoresCrud.Controllers.AuthController.#ctor(Microsoft.Extensions.Options.IOptions{proveedoresCrud.config.JwtSettings})">
+            <summary>
+            Constructor del controlador de autenticación.
+            </summary>
+            <param name="jwtSettings">Configuración de JWT inyectada mediante IOptions.</param>
+        </member>
+        <member name="M:ProveedoresCrud.Controllers.AuthController.Login(proveedoresCrud.models.userLoginDto)">
+            <summary>
+            Inicia sesión con credenciales quemadas.
+            </summary>
+            <remarks>
+            Ejemplo de petición:
+            
+                POST /api/Auth/login
+                {
+                    "username": "admin",
+                    "password": "password"
+                }
+            
+            </remarks>
+            <param name="user">Objeto que contiene las credenciales de inicio de sesión.</param>
+            <returns>Token JWT si las credenciales son correctas, o mensaje de error si son incorrectas.</returns>
+            <response code="200">Retorna el token JWT si el inicio de sesión es exitoso.</response>
+            <response code="401">Retorna un mensaje de error si el usuario o contraseña son incorrectos.</response>
+        </member>
+        <member name="M:ProveedoresCrud.Controllers.AuthController.GenerateJwtToken(System.String)">
+            <summary>
+            Genera un token JWT para el usuario autenticado.
+            </summary>
+            <param name="username">Nombre de usuario para el token JWT.</param>
+            <returns>Cadena con el token JWT generado.</returns>
+        </member>
+        <member name="M:ProveedoresCrud.Controllers.ProveedoresController.GetProveedores">
+            <summary>
+            Obtiene la lista de todos los proveedores.
+            </summary>
+            <returns>Lista de proveedores.</returns>
+            <response code="200">Devuelve la lista de proveedores</response>
+        </member>
+        <member name="M:ProveedoresCrud.Controllers.ProveedoresController.GetProveedor(System.String)">
+            <summary>
+            Obtiene un objeto por su NIT.
+            </summary>
+            <param name="nit">NIT del objeto.</param>
+            <response code="200">OK. Devuelve el objeto solicitado.</response>        
+            <response code="404">NotFound. No se ha encontrado el objeto solicitado.</response>
+            <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>
+        </member>
+        <member name="M:ProveedoresCrud.Controllers.ProveedoresController.CreateProveedor(proveedoresCrud.models.ProveedorDTOs)">
+            <summary>
+            Crea un nuevo proveedor.
+            </summary>
+            <param name="proveedorDto">El objeto proveedor a crear.</param>
+            <returns>El proveedor recién creado.</returns>
+            <response code="201">Devuelve el proveedor recién creado</response>
+            <response code="400">Si el proveedor es nulo o inválido</response>
+            <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>  
+        </member>
+        <member name="M:ProveedoresCrud.Controllers.ProveedoresController.UpdateProveedor(System.String,proveedoresCrud.models.ProveedorDTOs)">
+            <summary>
+            Actualiza un proveedor existente por su NIT.
+            </summary>
+            <param name="nit">NIT del proveedor a actualizar.</param>
+            <param name="proveedorDto">El objeto proveedor actualizado.</param>
+            <returns>Un mensaje de éxito si la actualización es exitosa.</returns>
+            <response code="200">Si la actualización es exitosa</response>
+            <response code="400">Si el NIT no coincide</response>
+            <response code="404">Si no se encuentra el proveedor</response>
+            <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>
+        </member>
+        <member name="M:ProveedoresCrud.Controllers.ProveedoresController.DeleteProveedor(System.String)">
+            <summary>
+            Elimina un proveedor por su NIT.
+            </summary>
+            <param name="nit">NIT del proveedor a eliminar.</param>
+            <returns>Un mensaje de éxito si la eliminación es exitosa.</returns>
+            <response code="200">Si la eliminación es exitosa</response>
+            <response code="400">Si el NIT es inválido</response>
+            <response code="404">Si no se encuentra el proveedor</response>
+            <response code="401">Unauthorized. No se ha indicado o es incorrecto el Token JWT de acceso.</response>
+        </member>
+    </members>
+</doc>
